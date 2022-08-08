@@ -153,7 +153,7 @@ void handle_server(){
             client.println("<style>body { text-align: center; font-family: \"Trebuchet MS\", Arial; margin-left:auto; margin-right:auto; }</style>");
                     
             // Page title
-            client.println("</head><body style=\"background-color:#70cfff;\"><h1 style=\"color:#ff3410;\">Curtain Server</h1>");
+            client.println("</head><body style=\"background-color:#70cfff;\"><h1 style=\"color:#ff3410;\"> <a href=\"/\">Curtain Server</a></h1>");
            
             // the content of the HTTP response follows the header:
             client.print("<br><br>");       
@@ -254,10 +254,12 @@ void start_server(){
 void move_curtain(long speed, long between_turns){
    // opening:
   for (int x=0; x < 5; x++){
-     myservo.write(speed);
-     delay(TURN_MS);
-     myservo.write(STOP_SPEED);
-     delay(between_turns);
+    Serial.print("Moving!!  ");
+    Serial.println(x);
+    myservo.write(speed);
+    delay(TURN_MS);
+    myservo.write(STOP_SPEED);
+    delay(between_turns);
   }
 }
 
@@ -302,7 +304,7 @@ void toggleButtonRight() {
 
 void toggleButtonLeft() {
   Serial.println("Left.  Button 2 Pressed!");
-   sleep_time = sleep_time - HALF_HOUR;
+  sleep_time = sleep_time - HALF_HOUR;
 //  if (sleep_time < HALF_HOUR){ sleep_time = 0; }
 //  else{ sleep_time = sleep_time - HALF_HOUR;}
   print_time();
