@@ -39,13 +39,14 @@ long clockwise_speed = 110;
 long STOP_SPEED = 95;
 long counter_clock_speed = 80;
 long TURN_MS = 3000;
-long BETWEEN_TURNS_SHORT = 5 * 1000L;
 long MINUTE = 60 * 1000L;
 unsigned long HOUR = 60 * MINUTE;
 long HALF_HOUR = 30 * MINUTE;
+unsigned long BETWEEN_TURNS_SHORT = 5 * 1000L;
+unsigned long BETWEEN_TURNS_MED = 1 * MINUTE;
 unsigned long BETWEEN_TURNS_LONG = 4 * MINUTE;
+unsigned long wakeup_speed = BETWEEN_TURNS_LONG;
 unsigned long SCREEN_COUNTDOWN = 5 * MINUTE;
-
 
 long sleep_time = (HOUR * 7) + HALF_HOUR;
 int hours = 0;
@@ -175,6 +176,10 @@ void handle_server(){
             client.print("Click <a href=\"/3\">here</a> to OPEN NOW.<br>"); 
             client.print("<br><br>");
             client.print("Click <a href=\"/4\">here</a> to CLOSE NOW.<br>");             
+            client.print("<br><br>");
+            client.print("Click <a href=\"/5\">here</a> for a quick wakeup. (1 min. breaks).<br>");
+            client.print("<br><br>");
+            client.print("Click <a href=\"/6\">here</a> for a super-quick wakeup. (5 sec. breaks).<br>");
             // End page
             client.println("</body></html>");     
 
@@ -214,7 +219,14 @@ void handle_server(){
                 client.println();
                 print_screen("CLOSING!");
                 close_now();
-                          
+        }
+        if (currentLine.endsWith("GET /5")) {
+                print_screen("Quick Wakeup");
+                wakeup_speed = BETWEEN_TURNS_MED;
+        }
+        if (currentLine.endsWith("GET /6")) {
+                print_screen("Super-Quick Wakeup");
+                wakeup_speed = BETWEEN_TURNS_SHORT;
         }
       }
     }
@@ -253,7 +265,7 @@ void start_server(){
 
 void move_curtain(long speed, long between_turns){
    // opening:
-  for (int x=0; x < 5; x++){
+  for (int x=0; x < 6; x++){
     Serial.print("Moving!!  ");
     Serial.println(x);
     myservo.write(speed);
@@ -271,7 +283,7 @@ void open_now(){
 }
 void wakeup(){
   print_screen("Waky Waky!!");
-  move_curtain(clockwise_speed, BETWEEN_TURNS_LONG);
+  move_curtain(clockwise_speed, wakeup_speed);
 }
 
 void print_screen(String payload){          
