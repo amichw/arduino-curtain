@@ -44,10 +44,13 @@ long MINUTE = 60 * 1000L;
 unsigned long HOUR = 60 * MINUTE;
 long HALF_HOUR = 30 * MINUTE;
 unsigned long BETWEEN_TURNS_LONG = 4 * MINUTE;
+unsigned long SCREEN_COUNTDOWN = 5 * MINUTE;
+
 
 long sleep_time = (HOUR * 7) + HALF_HOUR;
 int hours = 0;
 int minutes = 0;
+unsigned long last_action = 0;
 
 
 //display Use hardware SPI
@@ -111,6 +114,10 @@ void loop() {
       sleep_time = current_time + 24 * HOUR;
       wakeup();
     }
+  if (last_action + SCREEN_COUNTDOWN < current_time){
+    // Shut-off screen:
+      tft.fillScreen(TFT_BLACK);
+  }
   handle_server();
   handle_buttons();
   current_time = millis();
@@ -269,7 +276,7 @@ void print_screen(String payload){
   tft.fillScreen(TFT_BLACK);
   tft.setFreeFont(FF23);
   tft.drawString(payload, 1, 43, GFXFF);
-
+  last_action = millis();
 }
 
 void print_time(){
